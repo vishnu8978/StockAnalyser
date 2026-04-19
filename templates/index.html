@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NSE Stock Analyzer</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0a0e1a;
+        --surface: #111827;
+        --border: #1e2d45;
+        --accent: #00d4aa;
+        --accent2: #f59e0b;
+        --red: #ef4444;
+        --green: #10b981;
+        --text: #e2e8f0;
+        --muted: #64748b;
+        --card: #131c2e;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+        min-height: 100vh;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background-image: linear-gradient(
+            rgba(0, 212, 170, 0.03) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(0, 212, 170, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+      }
+      .wrapper {
+        position: relative;
+        z-index: 1;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px 20px;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 32px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .logo-text {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 28px;
+        letter-spacing: 2px;
+        color: var(--accent);
+      }
+      .logo-sub {
+        font-size: 11px;
+        color: var(--muted);
+        letter-spacing: 3px;
+        font-family: "DM Mono", monospace;
+      }
+      .badge {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        color: var(--green);
+        font-family: "DM Mono", monospace;
+      }
+      .dot {
+        width: 6px;
+        height: 6px;
+        background: var(--green);
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+      .search-box {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+      }
+      .search-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          var(--accent),
+          #0099ff,
+          var(--accent)
+        );
+        background-size: 200%;
+        animation: shimmer 3s linear infinite;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+      .search-label {
+        font-size: 11px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+        margin-bottom: 12px;
+      }
+      .search-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .search-input {
+        flex: 1;
+        min-width: 200px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 18px;
+        color: var(--text);
+        font-family: "DM Mono", monospace;
+        font-size: 16px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        outline: none;
+        transition: all 0.3s;
+      }
+      .search-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+      }
+      .search-input::placeholder {
+        color: var(--muted);
+      }
+      .btn {
+        padding: 14px 28px;
+        background: linear-gradient(135deg, var(--accent), #00a884);
+        border: none;
+        border-radius: 10px;
+        color: var(--bg);
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 212, 170, 0.4);
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .quick {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 14px;
+        align-items: center;
+      }
+      .chip {
+        padding: 5px 12px;
+        background: #1a2235;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        font-size: 11px;
+        font-family: "DM Mono", monospace;
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.2s;
+        letter-spacing: 1px;
+      }
+      .chip:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 60px;
+      }
+      .loading.show {
+        display: block;
+      }
+      .ring {
+        width: 56px;
+        height: 56px;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 16px;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .load-txt {
+        font-family: "DM Mono", monospace;
+        color: var(--muted);
+        font-size: 13px;
+        letter-spacing: 2px;
+      }
+      .load-steps {
+        margin-top: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+      }
+      .load-step {
+        font-size: 12px;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+        opacity: 0;
+        animation: fadeStep 0.5s forwards;
+      }
+      .load-step:nth-child(1) {
+        animation-delay: 0.5s;
+      }
+      .load-step:nth-child(2) {
+        animation-delay: 2s;
+      }
+      .load-step:nth-child(3) {
+        animation-delay: 4s;
+      }
+      @keyframes fadeStep {
+        to {
+          opacity: 1;
+          color: var(--accent);
+        }
+      }
+      .results {
+        display: none;
+        animation: fadeIn 0.5s ease;
+      }
+      .results.show {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .company-bar {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px 24px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .co-name {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 26px;
+        letter-spacing: 2px;
+      }
+      .co-sub {
+        font-size: 12px;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+        margin-top: 2px;
+      }
+      .verdict {
+        padding: 10px 24px;
+        border-radius: 10px;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 22px;
+        letter-spacing: 3px;
+      }
+      .buy {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--green);
+        border: 1px solid rgba(16, 185, 129, 0.4);
+      }
+      .watch {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--accent2);
+        border: 1px solid rgba(245, 158, 11, 0.4);
+      }
+      .avoid {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--red);
+        border: 1px solid rgba(239, 68, 68, 0.4);
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .stat {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        transition: all 0.3s;
+      }
+      .stat:hover {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+      }
+      .stat-l {
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+        margin-bottom: 6px;
+      }
+      .stat-v {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 24px;
+        letter-spacing: 1px;
+      }
+      .grid2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      @media (max-width: 650px) {
+        .grid2 {
+          grid-template-columns: 1fr;
+        }
+      }
+      .panel {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+      }
+      .panel-title {
+        font-size: 10px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(30, 45, 69, 0.4);
+      }
+      .row:last-child {
+        border: none;
+      }
+      .rl {
+        font-size: 12px;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+      }
+      .rv {
+        font-size: 13px;
+        font-family: "DM Mono", monospace;
+        color: var(--text);
+      }
+      .ai-box {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 20px;
+        position: relative;
+        overflow: hidden;
+      }
+      .ai-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, var(--accent), #0099ff);
+      }
+      .ai-text {
+        font-size: 14px;
+        line-height: 1.9;
+        color: #94a3b8;
+        white-space: pre-wrap;
+        font-family: "DM Sans", sans-serif;
+      }
+      .targets {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .tcard {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 16px;
+        text-align: center;
+      }
+      .tl {
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        font-family: "DM Mono", monospace;
+        margin-bottom: 8px;
+      }
+      .tv {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 22px;
+      }
+      .error-box {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        color: var(--red);
+        font-family: "DM Mono", monospace;
+        display: none;
+        margin-bottom: 20px;
+      }
+      .error-box.show {
+        display: block;
+      }
+      footer {
+        text-align: center;
+        padding: 24px;
+        color: var(--muted);
+        font-size: 11px;
+        font-family: "DM Mono", monospace;
+        border-top: 1px solid var(--border);
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <div>
+          <div class="logo-text">📊 StockSense AI</div>
+          <div class="logo-sub">NSE · BSE Analysis Platform</div>
+        </div>
+        <div class="badge">
+          <div class="dot"></div>
+          LOCAL AI · OLLAMA
+        </div>
+      </header>
+
+      <div class="search-box">
+        <div class="search-label">⚡ Analyze Any NSE Stock</div>
+        <div class="search-row">
+          <input
+            class="search-input"
+            id="inp"
+            type="text"
+            placeholder="TATAPOWER, RELIANCE, INFY..."
+          />
+          <button class="btn" id="analyzeBtn" onclick="analyze()">
+            ▶ Analyze
+          </button>
+        </div>
+        <div class="quick">
+          <span
+            style="
+              font-size: 11px;
+              color: var(--muted);
+              font-family: 'DM Mono', monospace;
+            "
+            >QUICK:</span
+          >
+          <div class="chip" onclick="quick('TATAPOWER')">TATAPOWER</div>
+          <div class="chip" onclick="quick('RELIANCE')">RELIANCE</div>
+          <div class="chip" onclick="quick('INFY')">INFY</div>
+          <div class="chip" onclick="quick('HDFCBANK')">HDFCBANK</div>
+          <div class="chip" onclick="quick('ZOMATO')">ZOMATO</div>
+        </div>
+      </div>
+
+      <div class="error-box" id="errorBox"></div>
+
+      <div class="loading" id="loading">
+        <div class="ring"></div>
+        <div class="load-txt">ANALYZING STOCK WITH AI...</div>
+        <div class="load-steps">
+          <div class="load-step">→ Fetching price data from yfinance...</div>
+          <div class="load-step">→ Processing financial metrics...</div>
+          <div class="load-step">→ Running Llama 3.1 analysis...</div>
+        </div>
+      </div>
+
+      <div class="results" id="results">
+        <div class="company-bar">
+          <div>
+            <div class="co-name" id="coName">—</div>
+            <div class="co-sub" id="coSub">NSE LISTED</div>
+          </div>
+          <div class="verdict watch" id="verdictBox">⚡ WATCH</div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-l">Current Price</div>
+            <div class="stat-v" id="sPrice">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-l">52W High</div>
+            <div class="stat-v" id="sHigh">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-l">52W Low</div>
+            <div class="stat-v" id="sLow">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-l">PE Ratio</div>
+            <div class="stat-v" id="sPE">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-l">ROE</div>
+            <div class="stat-v" id="sROE">—</div>
+          </div>
+          <div class="stat">
+            <div class="stat-l">Debt / Equity</div>
+            <div class="stat-v" id="sDE">—</div>
+          </div>
+        </div>
+
+        <div class="grid2">
+          <div class="panel">
+            <div class="panel-title">📋 Key Metrics</div>
+            <div class="row">
+              <span class="rl">Profit Margin</span
+              ><span class="rv" id="mPM">—</span>
+            </div>
+            <div class="row">
+              <span class="rl">Dividend Yield</span
+              ><span class="rv" id="mDY">—</span>
+            </div>
+            <div class="row">
+              <span class="rl">Avg Volume</span
+              ><span class="rv" id="mVol">—</span>
+            </div>
+            <div class="row">
+              <span class="rl">Market Cap</span
+              ><span class="rv" id="mCap">—</span>
+            </div>
+            <div class="row">
+              <span class="rl">Total Revenue</span
+              ><span class="rv" id="mRev">—</span>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">📈 Price Position</div>
+            <div class="row">
+              <span class="rl">vs 52W High</span
+              ><span class="rv" id="ppHigh">—</span>
+            </div>
+            <div class="row">
+              <span class="rl">vs 52W Low</span
+              ><span class="rv" id="ppLow">—</span>
+            </div>
+            <div class="row">
+              <span class="rl">Price Range</span
+              ><span class="rv" id="ppRange">—</span>
+            </div>
+            <div class="row">
+              <span class="rl">PE Assessment</span
+              ><span class="rv" id="ppPE">—</span>
+            </div>
+            <div class="row">
+              <span class="rl">ROE Assessment</span
+              ><span class="rv" id="ppROE">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-box">
+          <div class="panel-title">🤖 AI Analysis — Llama 3.1 via Ollama</div>
+          <div class="ai-text" id="aiText">—</div>
+        </div>
+
+        <div class="targets">
+          <div class="tcard">
+            <div class="tl">🎯 Entry</div>
+            <div class="tv" style="color: var(--accent)" id="tEntry">—</div>
+          </div>
+          <div class="tcard">
+            <div class="tl">🚀 Target</div>
+            <div class="tv" style="color: var(--green)" id="tTarget">—</div>
+          </div>
+          <div class="tcard">
+            <div class="tl">🛑 Stop Loss</div>
+            <div class="tv" style="color: var(--red)" id="tSL">—</div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        ⚠️ FOR EDUCATIONAL PURPOSES ONLY · NOT FINANCIAL ADVICE · ALWAYS DO YOUR
+        OWN RESEARCH
+      </footer>
+    </div>
+
+    <script>
+      function quick(s) {
+        document.getElementById("inp").value = s;
+        analyze();
+      }
+
+      function formatNum(n) {
+        if (!n || n === "N/A") return "—";
+        if (n >= 10000000) return "₹" + (n / 10000000).toFixed(1) + "Cr";
+        if (n >= 100000) return "₹" + (n / 100000).toFixed(1) + "L";
+        return "₹" + n;
+      }
+
+      function extractVerdict(text) {
+        const t = text.toUpperCase();
+        if (t.includes("VERDICT: BUY") || t.includes("VERDICT:BUY"))
+          return "BUY";
+        if (t.includes("VERDICT: AVOID") || t.includes("VERDICT:AVOID"))
+          return "AVOID";
+        return "WATCH";
+      }
+
+      function extractPrice(text, keyword) {
+        const regex = new RegExp(keyword + "[:\\s]*[₹]?([\\d,\\.]+)", "i");
+        const match = text.match(regex);
+        return match ? "₹" + match[1] : "—";
+      }
+
+      async function analyze() {
+        const symbol = document
+          .getElementById("inp")
+          .value.trim()
+          .toUpperCase();
+        if (!symbol) {
+          alert("Please enter a stock symbol!");
+          return;
+        }
+
+        document.getElementById("loading").classList.add("show");
+        document.getElementById("results").classList.remove("show");
+        document.getElementById("errorBox").classList.remove("show");
+        document.getElementById("analyzeBtn").disabled = true;
+
+        try {
+          const res = await fetch("/analyze", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ symbol }),
+          });
+          const json = await res.json();
+
+          if (json.error) {
+            document.getElementById("errorBox").textContent =
+              "⚠️ " + json.error;
+            document.getElementById("errorBox").classList.add("show");
+            return;
+          }
+
+          const d = json.data;
+          const analysis = json.analysis;
+          const price = d.current_price || 0;
+          const high = d.week_high || 0;
+          const low = d.week_low || 0;
+
+          document.getElementById("coName").textContent = d.name || symbol;
+          document.getElementById("coSub").textContent =
+            symbol + " · NSE LISTED";
+          document.getElementById("sPrice").textContent = price
+            ? "₹" + price
+            : "—";
+          document.getElementById("sHigh").textContent = high
+            ? "₹" + high
+            : "—";
+          document.getElementById("sLow").textContent = low ? "₹" + low : "—";
+          document.getElementById("sPE").textContent = d.pe_ratio
+            ? d.pe_ratio + "x"
+            : "—";
+          document.getElementById("sROE").textContent = d.roe
+            ? d.roe + "%"
+            : "—";
+          document.getElementById("sDE").textContent = d.debt_to_equity || "—";
+          document.getElementById("mPM").textContent = d.profit_margin
+            ? d.profit_margin + "%"
+            : "—";
+          document.getElementById("mDY").textContent = d.dividend_yield
+            ? d.dividend_yield + "%"
+            : "—";
+          document.getElementById("mVol").textContent = d.volume
+            ? (d.volume / 100000).toFixed(1) + "L"
+            : "—";
+          document.getElementById("mCap").textContent = formatNum(d.market_cap);
+          document.getElementById("mRev").textContent = formatNum(d.revenue);
+
+          const vHigh =
+            high && price
+              ? (((price - high) / high) * 100).toFixed(1) + "%"
+              : "—";
+          const vLow =
+            low && price
+              ? "+" + (((price - low) / low) * 100).toFixed(1) + "%"
+              : "—";
+          document.getElementById("ppHigh").textContent = vHigh;
+          document.getElementById("ppLow").textContent = vLow;
+          document.getElementById("ppRange").textContent =
+            high && low ? "₹" + low + " — ₹" + high : "—";
+          document.getElementById("ppPE").textContent = d.pe_ratio
+            ? d.pe_ratio > 30
+              ? "Expensive"
+              : d.pe_ratio > 15
+              ? "Fair"
+              : "Cheap"
+            : "—";
+          document.getElementById("ppROE").textContent = d.roe
+            ? d.roe > 15
+              ? "Strong"
+              : d.roe > 10
+              ? "Moderate"
+              : "Weak"
+            : "—";
+
+          document.getElementById("aiText").textContent = analysis;
+
+          const verdict = extractVerdict(analysis);
+          const vBox = document.getElementById("verdictBox");
+          vBox.className = "verdict " + verdict.toLowerCase();
+          vBox.textContent =
+            verdict === "BUY"
+              ? "✅ BUY"
+              : verdict === "AVOID"
+              ? "❌ AVOID"
+              : "⚡ WATCH";
+
+          document.getElementById("tEntry").textContent = extractPrice(
+            analysis,
+            "ENTRY"
+          );
+          document.getElementById("tTarget").textContent = extractPrice(
+            analysis,
+            "TARGET"
+          );
+          document.getElementById("tSL").textContent =
+            extractPrice(analysis, "STOPLOSS") ||
+            extractPrice(analysis, "STOP LOSS");
+
+          document.getElementById("results").classList.add("show");
+        } catch (e) {
+          document.getElementById("errorBox").textContent =
+            "⚠️ Connection error. Make sure server is running.";
+          document.getElementById("errorBox").classList.add("show");
+        } finally {
+          document.getElementById("loading").classList.remove("show");
+          document.getElementById("analyzeBtn").disabled = false;
+        }
+      }
+
+      document.getElementById("inp").addEventListener("keypress", (e) => {
+        if (e.key === "Enter") analyze();
+      });
+    </script>
+  </body>
+</html>
