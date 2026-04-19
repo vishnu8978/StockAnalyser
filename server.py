@@ -1,16 +1,25 @@
 from flask import Flask, render_template, request, jsonify
 import yfinance as yf
-import ollama
+from groq import Groq
+import os
 
 app = Flask(__name__)
 
+# ----------------------------------------
+# Groq Client
+# ----------------------------------------
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+
+# ----------------------------------------
+# Get Stock Data from yfinance
+# ----------------------------------------
 def get_stock_data(symbol):
     try:
         stock = yf.Ticker(f"{symbol}.NS")
         info = stock.info
 
-        # Check if stock actually exists
-        if not info or info.get('regularMarketPrice') is None and info.get('currentPrice') is None:
+        if not info or (info.get('regularMarketPrice') is None 
+                        and info.get('currentPrice') is None):
             return {"error": f"Stock {symbol} not found on NSE"}
 
         return {
@@ -29,7 +38,11 @@ def get_stock_data(symbol):
         }
     except Exception as e:
         return {"error": f"Could not fetch {symbol} — please check symbol"}
-def analyze_with_ollama(symbol, data):
+
+# ----------------------------------------
+# Analyze with Groq
+# ----------------------------------------
+def analyze_with_groq(symbol, data):
     try:
         prompt = f"""
         You are an expert Indian stock market analyst.
@@ -66,15 +79,20 @@ def analyze_with_ollama(symbol, data):
         STOPLOSS: (stop loss price)
         """
 
-        response = ollama.chat(
-            model="llama3.1",
-            messages=[{"role": "user", "content": prompt}]
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=1000
         )
-        return response['message']['content']
+
+        return response.choices[0].message.content
 
     except Exception as e:
         return f"Analysis error: {str(e)}"
 
+# ----------------------------------------
+# Routes
+# ----------------------------------------
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -86,13 +104,16 @@ def analyze():
         return jsonify({"error": "Please enter a stock symbol"})
     data = get_stock_data(symbol)
     if "error" in data:
-        return jsonify({"error": f"Could not fetch data for {symbol}"})
-    analysis = analyze_with_ollama(symbol, data)
+        return jsonify({"error": data["error"]})
+    analysis = analyze_with_groq(symbol, data)
     return jsonify({
         "symbol": symbol,
         "data": data,
         "analysis": analysis
     })
 
+# ----------------------------------------
+# Run App
+# ----------------------------------------
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
