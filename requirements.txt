@@ -1,5 +1,8 @@
 flask
 yfinance
 requests
-gunicorn
 groq
+python-dotenv
+pytz
+pandas
+gunicorn

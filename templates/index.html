@@ -3,113 +3,199 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>NSE Stock Analyzer</title>
+    <title>StockSense AI</title>
     <link
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Space+Mono:wght@400;700&family=Syne:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <style>
       :root {
-        --bg: #0a0e1a;
-        --surface: #111827;
-        --border: #1e2d45;
-        --accent: #00d4aa;
-        --accent2: #f59e0b;
-        --red: #ef4444;
-        --green: #10b981;
-        --text: #e2e8f0;
-        --muted: #64748b;
-        --card: #131c2e;
+        --bg: #020408;
+        --bg2: #060d14;
+        --surface: #0a1628;
+        --surface2: #0f1f35;
+        --border: #0d2844;
+        --border2: #1a3a5c;
+        --accent: #00f5c4;
+        --accent2: #ff6b00;
+        --accent3: #7c3aed;
+        --blue: #0ea5e9;
+        --red: #ff3366;
+        --green: #00f5c4;
+        --yellow: #ffd700;
+        --text: #cdd9e5;
+        --text2: #8ba3b8;
+        --muted: #3d5a73;
+        --card: #080f1c;
       }
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
+      html {
+        scroll-behavior: smooth;
+      }
       body {
         background: var(--bg);
         color: var(--text);
-        font-family: "DM Sans", sans-serif;
+        font-family: "Syne", sans-serif;
         min-height: 100vh;
+        overflow-x: hidden;
       }
       body::before {
         content: "";
         position: fixed;
         inset: 0;
+        background: radial-gradient(
+            ellipse 80% 50% at 20% 0%,
+            rgba(0, 245, 196, 0.04) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 60% 40% at 80% 100%,
+            rgba(124, 58, 237, 0.05) 0%,
+            transparent 60%
+          );
         pointer-events: none;
         z-index: 0;
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
         background-image: linear-gradient(
-            rgba(0, 212, 170, 0.03) 1px,
+            rgba(0, 245, 196, 0.015) 1px,
             transparent 1px
           ),
-          linear-gradient(90deg, rgba(0, 212, 170, 0.03) 1px, transparent 1px);
-        background-size: 40px 40px;
+          linear-gradient(90deg, rgba(0, 245, 196, 0.015) 1px, transparent 1px);
+        background-size: 60px 60px;
+        pointer-events: none;
+        z-index: 0;
       }
       .wrapper {
         position: relative;
         z-index: 1;
-        max-width: 1100px;
+        max-width: 1300px;
         margin: 0 auto;
-        padding: 24px 20px;
+        padding: 0 24px 60px;
       }
+
+      /* HEADER */
       header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        margin-bottom: 32px;
-        padding-bottom: 20px;
+        padding: 24px 0 20px;
         border-bottom: 1px solid var(--border);
+        margin-bottom: 28px;
+        position: relative;
       }
-      .logo-text {
-        font-family: "Bebas Neue", sans-serif;
-        font-size: 28px;
-        letter-spacing: 2px;
-        color: var(--accent);
+      header::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        width: 200px;
+        height: 1px;
+        background: linear-gradient(90deg, var(--accent), transparent);
       }
-      .logo-sub {
-        font-size: 11px;
-        color: var(--muted);
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .logo-icon {
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, var(--accent), var(--blue));
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        animation: iconPulse 3s ease-in-out infinite;
+      }
+      @keyframes iconPulse {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(0, 245, 196, 0.3);
+        }
+        50% {
+          box-shadow: 0 0 35px rgba(0, 245, 196, 0.6);
+        }
+      }
+      .logo-name {
+        font-family: "Orbitron", sans-serif;
+        font-size: 22px;
+        font-weight: 900;
         letter-spacing: 3px;
-        font-family: "DM Mono", monospace;
+        background: linear-gradient(135deg, var(--accent), var(--blue));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
       }
-      .badge {
+      .logo-tag {
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        color: var(--muted);
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-top: 2px;
+      }
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .hbadge {
         display: flex;
         align-items: center;
         gap: 6px;
-        background: rgba(16, 185, 129, 0.1);
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 12px;
-        color: var(--green);
-        font-family: "DM Mono", monospace;
+        padding: 7px 14px;
+        border-radius: 6px;
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        border: 1px solid;
       }
-      .dot {
+      .hbadge-green {
+        background: rgba(0, 245, 196, 0.05);
+        border-color: rgba(0, 245, 196, 0.2);
+        color: var(--accent);
+      }
+      .hbadge-blue {
+        background: rgba(14, 165, 233, 0.05);
+        border-color: rgba(14, 165, 233, 0.2);
+        color: var(--blue);
+      }
+      .live-dot {
         width: 6px;
         height: 6px;
-        background: var(--green);
         border-radius: 50%;
-        animation: pulse 2s infinite;
+        background: var(--accent);
+        animation: blink 1.5s ease-in-out infinite;
       }
-      @keyframes pulse {
+      @keyframes blink {
         0%,
         100% {
           opacity: 1;
         }
         50% {
-          opacity: 0.4;
+          opacity: 0.2;
         }
       }
-      .search-box {
+
+      /* INDICES */
+      .indices-section {
+        margin-bottom: 28px;
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: 16px;
-        padding: 24px;
-        margin-bottom: 24px;
-        position: relative;
         overflow: hidden;
+        position: relative;
       }
-      .search-box::before {
+      .indices-section::before {
         content: "";
         position: absolute;
         top: 0;
@@ -118,14 +204,16 @@
         height: 2px;
         background: linear-gradient(
           90deg,
+          transparent,
           var(--accent),
-          #0099ff,
-          var(--accent)
+          var(--blue),
+          var(--accent3),
+          transparent
         );
-        background-size: 200%;
-        animation: shimmer 3s linear infinite;
+        animation: scanline 4s linear infinite;
+        background-size: 300% 100%;
       }
-      @keyframes shimmer {
+      @keyframes scanline {
         0% {
           background-position: 200% 0;
         }
@@ -133,125 +221,357 @@
           background-position: -200% 0;
         }
       }
-      .search-label {
+      .indices-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .indices-label {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .market-pill {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      .pill-open {
+        background: rgba(0, 245, 196, 0.1);
+        border: 1px solid rgba(0, 245, 196, 0.3);
+        color: var(--accent);
+      }
+      .pill-closed {
+        background: rgba(255, 51, 102, 0.1);
+        border: 1px solid rgba(255, 51, 102, 0.3);
+        color: var(--red);
+      }
+      .indices-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+      .idx-card {
+        padding: 16px 20px;
+        border-right: 1px solid var(--border);
+        transition: background 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+      .idx-card:last-child {
+        border-right: none;
+      }
+      .idx-card:hover {
+        background: rgba(0, 245, 196, 0.03);
+      }
+      .idx-name {
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 6px;
+      }
+      .idx-price {
+        font-family: "Orbitron", monospace;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+      .idx-chg {
+        font-family: "Space Mono", monospace;
         font-size: 11px;
+      }
+      .col-up {
+        color: var(--accent);
+      }
+      .col-down {
+        color: var(--red);
+      }
+      .idx-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 60%;
+        border-radius: 0 2px 0 0;
+      }
+      .bar-up {
+        background: linear-gradient(90deg, var(--accent), transparent);
+      }
+      .bar-down {
+        background: linear-gradient(90deg, var(--red), transparent);
+      }
+      .indices-time {
+        padding: 8px 20px;
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        color: var(--muted);
+        letter-spacing: 2px;
+        border-top: 1px solid var(--border);
+        text-align: right;
+      }
+
+      /* EXCHANGE TABS */
+      .ex-tabs {
+        display: flex;
+        border-radius: 14px 14px 0 0;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-bottom: none;
+      }
+      .ex-tab {
+        flex: 1;
+        padding: 16px 24px;
+        text-align: center;
+        font-family: "Orbitron", sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 3px;
+        cursor: pointer;
+        transition: all 0.3s;
+        background: var(--bg2);
+        color: var(--muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        border-right: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+      }
+      .ex-tab:last-child {
+        border-right: none;
+      }
+      .ex-tab.active-nse {
+        background: rgba(0, 245, 196, 0.07);
+        color: var(--accent);
+        border-bottom: 2px solid var(--accent);
+      }
+      .ex-tab.active-bse {
+        background: rgba(255, 107, 0, 0.07);
+        color: var(--accent2);
+        border-bottom: 2px solid var(--accent2);
+      }
+      .tab-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+      .nse-dot {
+        background: var(--accent);
+        box-shadow: 0 0 8px var(--accent);
+      }
+      .bse-dot {
+        background: var(--accent2);
+        box-shadow: 0 0 8px var(--accent2);
+      }
+
+      /* SEARCH */
+      .search-panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-top: none;
+        border-radius: 0 0 14px 14px;
+        padding: 24px;
+        margin-bottom: 28px;
+      }
+      .search-hint {
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
         letter-spacing: 3px;
         text-transform: uppercase;
         color: var(--muted);
-        font-family: "DM Mono", monospace;
-        margin-bottom: 12px;
+        margin-bottom: 14px;
       }
       .search-row {
         display: flex;
         gap: 12px;
         flex-wrap: wrap;
       }
-      .search-input {
+      .s-input {
         flex: 1;
-        min-width: 200px;
-        background: var(--bg);
-        border: 1px solid var(--border);
+        min-width: 220px;
+        background: var(--card);
+        border: 1px solid var(--border2);
         border-radius: 10px;
-        padding: 14px 18px;
+        padding: 15px 20px;
         color: var(--text);
-        font-family: "DM Mono", monospace;
-        font-size: 16px;
-        letter-spacing: 2px;
+        font-family: "Orbitron", monospace;
+        font-size: 14px;
+        letter-spacing: 3px;
         text-transform: uppercase;
         outline: none;
         transition: all 0.3s;
       }
-      .search-input:focus {
+      .s-input.bse {
+        text-transform: capitalize;
+        font-family: "Syne", sans-serif;
+        font-size: 15px;
+        letter-spacing: 1px;
+      }
+      .s-input:focus {
         border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+        box-shadow: 0 0 0 3px rgba(0, 245, 196, 0.08);
       }
-      .search-input::placeholder {
-        color: var(--muted);
+      .s-input.bse:focus {
+        border-color: var(--accent2);
+        box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.08);
       }
-      .btn {
-        padding: 14px 28px;
-        background: linear-gradient(135deg, var(--accent), #00a884);
+      .btn-analyze {
+        padding: 15px 32px;
         border: none;
         border-radius: 10px;
-        color: var(--bg);
-        font-weight: 600;
-        font-size: 14px;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 700;
+        font-size: 12px;
+        letter-spacing: 2px;
         cursor: pointer;
         transition: all 0.3s;
+        white-space: nowrap;
       }
-      .btn:hover {
+      .btn-nse {
+        background: linear-gradient(135deg, var(--accent), #00b894);
+        color: var(--bg);
+        box-shadow: 0 4px 20px rgba(0, 245, 196, 0.3);
+      }
+      .btn-nse:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 212, 170, 0.4);
+        box-shadow: 0 8px 30px rgba(0, 245, 196, 0.5);
       }
-      .btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
+      .btn-bse {
+        background: linear-gradient(135deg, var(--accent2), #e55a00);
+        color: var(--bg);
+        box-shadow: 0 4px 20px rgba(255, 107, 0, 0.3);
       }
-      .quick {
+      .btn-bse:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(255, 107, 0, 0.5);
+      }
+      .quick-row {
         display: flex;
-        gap: 8px;
         flex-wrap: wrap;
+        gap: 8px;
         margin-top: 14px;
         align-items: center;
       }
-      .chip {
-        padding: 5px 12px;
-        background: #1a2235;
+      .quick-label {
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 2px;
+        color: var(--muted);
+        text-transform: uppercase;
+      }
+      .qchip {
+        padding: 5px 13px;
+        background: var(--card);
         border: 1px solid var(--border);
-        border-radius: 6px;
-        font-size: 11px;
-        font-family: "DM Mono", monospace;
+        border-radius: 5px;
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 1px;
         color: var(--muted);
         cursor: pointer;
         transition: all 0.2s;
-        letter-spacing: 1px;
+        text-transform: uppercase;
       }
-      .chip:hover {
+      .qchip:hover {
         border-color: var(--accent);
         color: var(--accent);
+        background: rgba(0, 245, 196, 0.05);
       }
+      .qchip.bse:hover {
+        border-color: var(--accent2);
+        color: var(--accent2);
+        background: rgba(255, 107, 0, 0.05);
+      }
+
+      /* ERROR */
+      .err-box {
+        display: none;
+        padding: 16px 20px;
+        background: rgba(255, 51, 102, 0.08);
+        border: 1px solid rgba(255, 51, 102, 0.25);
+        border-radius: 10px;
+        font-family: "Space Mono", monospace;
+        font-size: 12px;
+        color: var(--red);
+        margin-bottom: 24px;
+        letter-spacing: 1px;
+      }
+      .err-box.show {
+        display: block;
+      }
+
+      /* LOADING */
       .loading {
         display: none;
+        padding: 80px 40px;
         text-align: center;
-        padding: 60px;
       }
       .loading.show {
         display: block;
       }
-      .ring {
-        width: 56px;
-        height: 56px;
-        border: 3px solid var(--border);
-        border-top-color: var(--accent);
+      .load-ring-wrap {
+        position: relative;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 24px;
+      }
+      .load-ring {
+        position: absolute;
+        inset: 0;
         border-radius: 50%;
+        border: 2px solid transparent;
+      }
+      .ring-1 {
+        border-top-color: var(--accent);
         animation: spin 1s linear infinite;
-        margin: 0 auto 16px;
+      }
+      .ring-2 {
+        inset: 8px;
+        border-right-color: var(--blue);
+        animation: spin 1.5s linear infinite reverse;
+      }
+      .ring-3 {
+        inset: 16px;
+        border-bottom-color: var(--accent3);
+        animation: spin 2s linear infinite;
       }
       @keyframes spin {
         to {
           transform: rotate(360deg);
         }
       }
-      .load-txt {
-        font-family: "DM Mono", monospace;
-        color: var(--muted);
-        font-size: 13px;
-        letter-spacing: 2px;
+      .load-title {
+        font-family: "Orbitron", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 4px;
+        color: var(--accent);
+        margin-bottom: 20px;
       }
       .load-steps {
-        margin-top: 16px;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
         align-items: center;
       }
       .load-step {
-        font-size: 12px;
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 2px;
         color: var(--muted);
-        font-family: "DM Mono", monospace;
         opacity: 0;
-        animation: fadeStep 0.5s forwards;
+        animation: stepIn 0.5s forwards;
       }
       .load-step:nth-child(1) {
         animation-delay: 0.5s;
@@ -262,408 +582,971 @@
       .load-step:nth-child(3) {
         animation-delay: 4s;
       }
-      @keyframes fadeStep {
+      @keyframes stepIn {
         to {
           opacity: 1;
-          color: var(--accent);
+          color: var(--text2);
         }
       }
+
+      /* RESULTS */
       .results {
         display: none;
-        animation: fadeIn 0.5s ease;
       }
       .results.show {
         display: block;
+        animation: revealUp 0.6s ease;
       }
-      @keyframes fadeIn {
+      @keyframes revealUp {
         from {
           opacity: 0;
-          transform: translateY(16px);
+          transform: translateY(24px);
         }
         to {
           opacity: 1;
           transform: translateY(0);
         }
       }
-      .company-bar {
+
+      /* Company Header */
+      .co-header {
         background: var(--surface);
         border: 1px solid var(--border);
-        border-radius: 14px;
-        padding: 20px 24px;
+        border-radius: 16px;
+        padding: 24px 28px;
         margin-bottom: 20px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         flex-wrap: wrap;
-        gap: 12px;
+        gap: 16px;
+        position: relative;
+        overflow: hidden;
+      }
+      .co-header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, var(--accent), transparent 60%);
+      }
+      .co-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+      .co-avatar {
+        width: 54px;
+        height: 54px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Orbitron", sans-serif;
+        font-size: 16px;
+        font-weight: 900;
+        letter-spacing: 1px;
+        flex-shrink: 0;
+      }
+      .avatar-nse {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 245, 196, 0.2),
+          rgba(14, 165, 233, 0.2)
+        );
+        border: 1px solid rgba(0, 245, 196, 0.3);
+        color: var(--accent);
+      }
+      .avatar-bse {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 107, 0, 0.2),
+          rgba(255, 200, 0, 0.2)
+        );
+        border: 1px solid rgba(255, 107, 0, 0.3);
+        color: var(--accent2);
       }
       .co-name {
-        font-family: "Bebas Neue", sans-serif;
-        font-size: 26px;
+        font-family: "Orbitron", sans-serif;
+        font-size: 18px;
+        font-weight: 700;
         letter-spacing: 2px;
+        color: var(--text);
+        margin-bottom: 4px;
       }
-      .co-sub {
-        font-size: 12px;
+      .co-meta {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 2px;
         color: var(--muted);
-        font-family: "DM Mono", monospace;
-        margin-top: 2px;
+        text-transform: uppercase;
+      }
+      .ex-tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 9px;
+        letter-spacing: 2px;
+        margin-left: 8px;
+        vertical-align: middle;
+        font-family: "Space Mono", monospace;
+      }
+      .tag-nse {
+        background: rgba(0, 245, 196, 0.1);
+        border: 1px solid rgba(0, 245, 196, 0.3);
+        color: var(--accent);
+      }
+      .tag-bse {
+        background: rgba(255, 107, 0, 0.1);
+        border: 1px solid rgba(255, 107, 0, 0.3);
+        color: var(--accent2);
       }
       .verdict {
-        padding: 10px 24px;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 900;
+        font-size: 26px;
+        letter-spacing: 4px;
+        padding: 10px 28px;
         border-radius: 10px;
-        font-family: "Bebas Neue", sans-serif;
-        font-size: 22px;
-        letter-spacing: 3px;
       }
-      .buy {
-        background: rgba(16, 185, 129, 0.15);
-        color: var(--green);
-        border: 1px solid rgba(16, 185, 129, 0.4);
+      .v-buy {
+        background: rgba(0, 245, 196, 0.1);
+        color: var(--accent);
+        border: 1px solid rgba(0, 245, 196, 0.4);
+        box-shadow: 0 0 30px rgba(0, 245, 196, 0.15);
       }
-      .watch {
-        background: rgba(245, 158, 11, 0.15);
-        color: var(--accent2);
-        border: 1px solid rgba(245, 158, 11, 0.4);
+      .v-watch {
+        background: rgba(255, 215, 0, 0.1);
+        color: var(--yellow);
+        border: 1px solid rgba(255, 215, 0, 0.4);
       }
-      .avoid {
-        background: rgba(239, 68, 68, 0.15);
+      .v-avoid {
+        background: rgba(255, 51, 102, 0.1);
         color: var(--red);
-        border: 1px solid rgba(239, 68, 68, 0.4);
+        border: 1px solid rgba(255, 51, 102, 0.4);
       }
-      .stats {
+
+      /* Stats */
+      .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: 12px;
         margin-bottom: 20px;
       }
-      .stat {
+      .stat-card {
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 12px;
-        padding: 16px;
+        padding: 18px;
+        position: relative;
+        overflow: hidden;
         transition: all 0.3s;
       }
-      .stat:hover {
-        border-color: var(--accent);
-        transform: translateY(-2px);
+      .stat-card:hover {
+        border-color: var(--border2);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
       }
-      .stat-l {
-        font-size: 10px;
-        letter-spacing: 2px;
+      .stat-label {
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 3px;
         text-transform: uppercase;
         color: var(--muted);
-        font-family: "DM Mono", monospace;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
       }
-      .stat-v {
-        font-family: "Bebas Neue", sans-serif;
-        font-size: 24px;
+      .stat-val {
+        font-family: "Orbitron", monospace;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: var(--text);
+        line-height: 1;
+      }
+      .stat-sub {
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        color: var(--muted);
+        margin-top: 6px;
         letter-spacing: 1px;
       }
-      .grid2 {
+      .stat-line {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 2px;
+        width: 40%;
+        background: linear-gradient(90deg, var(--accent), transparent);
+      }
+
+      /* Exchange Panels */
+      .ex-panel {
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 20px;
+        display: none;
+      }
+      .nse-xp {
+        background: var(--card);
+        border: 1px solid rgba(0, 245, 196, 0.15);
+      }
+      .bse-xp {
+        background: var(--card);
+        border: 1px solid rgba(255, 107, 0, 0.15);
+      }
+      .xp-title {
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+      }
+      .nse-xp .xp-title {
+        color: var(--accent);
+      }
+      .bse-xp .xp-title {
+        color: var(--accent2);
+      }
+      .xp-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 10px;
+      }
+      .xp-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 14px;
+      }
+      .xp-label {
+        font-family: "Space Mono", monospace;
+        font-size: 8px;
+        letter-spacing: 2px;
+        color: var(--muted);
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+      .xp-val {
+        font-family: "Orbitron", monospace;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      /* Panels Grid */
+      .panels-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 16px;
         margin-bottom: 20px;
       }
-      @media (max-width: 650px) {
-        .grid2 {
+      @media (max-width: 680px) {
+        .panels-grid {
           grid-template-columns: 1fr;
         }
       }
-      .panel {
+      .info-panel {
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 14px;
         padding: 20px;
       }
-      .panel-title {
-        font-size: 10px;
-        letter-spacing: 3px;
+      .panel-hd {
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 4px;
         text-transform: uppercase;
         color: var(--muted);
-        font-family: "DM Mono", monospace;
         margin-bottom: 14px;
         padding-bottom: 10px;
         border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
-      .row {
+      .panel-hd::before {
+        content: "";
+        width: 3px;
+        height: 12px;
+        background: var(--accent);
+        border-radius: 2px;
+      }
+      .data-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 8px 0;
-        border-bottom: 1px solid rgba(30, 45, 69, 0.4);
+        padding: 9px 0;
+        border-bottom: 1px solid rgba(13, 40, 68, 0.6);
       }
-      .row:last-child {
-        border: none;
+      .data-row:last-child {
+        border-bottom: none;
       }
-      .rl {
-        font-size: 12px;
+      .dr-l {
+        font-family: "Space Mono", monospace;
+        font-size: 10px;
+        letter-spacing: 1px;
         color: var(--muted);
-        font-family: "DM Mono", monospace;
+        text-transform: uppercase;
       }
-      .rv {
-        font-size: 13px;
-        font-family: "DM Mono", monospace;
+      .dr-v {
+        font-family: "Space Mono", monospace;
+        font-size: 12px;
         color: var(--text);
       }
-      .ai-box {
+
+      /* AI Panel */
+      .ai-panel {
         background: var(--card);
         border: 1px solid var(--border);
         border-radius: 14px;
-        padding: 20px;
+        padding: 24px;
         margin-bottom: 20px;
         position: relative;
         overflow: hidden;
       }
-      .ai-box::before {
+      .ai-panel::before {
         content: "";
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         height: 2px;
-        background: linear-gradient(90deg, var(--accent), #0099ff);
+        background: linear-gradient(
+          90deg,
+          var(--accent),
+          var(--blue),
+          var(--accent3)
+        );
       }
-      .ai-text {
+      .ai-hd {
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .ai-hd::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, var(--border), transparent);
+      }
+      .ai-content {
         font-size: 14px;
         line-height: 1.9;
-        color: #94a3b8;
+        color: var(--text2);
         white-space: pre-wrap;
-        font-family: "DM Sans", sans-serif;
+        font-family: "Syne", sans-serif;
       }
-      .targets {
+
+      /* Targets */
+      .targets-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-        margin-bottom: 20px;
+        gap: 14px;
+        margin-bottom: 24px;
       }
-      .tcard {
+      .target-card {
         background: var(--card);
         border: 1px solid var(--border);
-        border-radius: 12px;
-        padding: 16px;
-        text-align: center;
-      }
-      .tl {
-        font-size: 10px;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        color: var(--muted);
-        font-family: "DM Mono", monospace;
-        margin-bottom: 8px;
-      }
-      .tv {
-        font-family: "Bebas Neue", sans-serif;
-        font-size: 22px;
-      }
-      .error-box {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        border-radius: 12px;
+        border-radius: 14px;
         padding: 20px;
         text-align: center;
-        color: var(--red);
-        font-family: "DM Mono", monospace;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s;
+      }
+      .target-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      }
+      .target-card:nth-child(1) {
+        border-top: 2px solid var(--blue);
+      }
+      .target-card:nth-child(2) {
+        border-top: 2px solid var(--accent);
+      }
+      .target-card:nth-child(3) {
+        border-top: 2px solid var(--red);
+      }
+      .target-label {
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      .target-price {
+        font-family: "Orbitron", monospace;
+        font-size: 24px;
+        font-weight: 700;
+        letter-spacing: 2px;
+      }
+
+      /* Chat */
+      .chat-wrap {
         display: none;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
       }
-      .error-box.show {
-        display: block;
+      .chat-box {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
       }
+      .chat-hd {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--surface);
+      }
+      .chat-hd::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        background: var(--accent);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--accent);
+        animation: blink 1.5s infinite;
+      }
+      .chat-messages {
+        min-height: 220px;
+        max-height: 420px;
+        overflow-y: auto;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .msg {
+        padding: 12px 16px;
+        border-radius: 12px;
+        font-size: 14px;
+        line-height: 1.7;
+        max-width: 82%;
+        font-family: "Syne", sans-serif;
+        animation: msgIn 0.3s ease;
+      }
+      @keyframes msgIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .msg-ai {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--text2);
+        border-bottom-left-radius: 4px;
+        align-self: flex-start;
+      }
+      .msg-user {
+        background: linear-gradient(
+          135deg,
+          rgba(0, 245, 196, 0.15),
+          rgba(14, 165, 233, 0.1)
+        );
+        border: 1px solid rgba(0, 245, 196, 0.2);
+        color: var(--text);
+        border-bottom-right-radius: 4px;
+        align-self: flex-end;
+      }
+      .msg-typing {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        border-bottom-left-radius: 4px;
+        align-self: flex-start;
+        font-family: "Space Mono", monospace;
+        font-size: 11px;
+        letter-spacing: 2px;
+      }
+      .chat-input-wrap {
+        padding: 16px 20px;
+        border-top: 1px solid var(--border);
+        background: var(--surface);
+        display: flex;
+        gap: 10px;
+      }
+      .chat-in {
+        flex: 1;
+        background: var(--card);
+        border: 1px solid var(--border2);
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: var(--text);
+        font-family: "Syne", sans-serif;
+        font-size: 14px;
+        outline: none;
+        transition: all 0.3s;
+      }
+      .chat-in:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(0, 245, 196, 0.08);
+      }
+      .chat-send {
+        padding: 12px 20px;
+        background: linear-gradient(135deg, var(--accent), #00b894);
+        border: none;
+        border-radius: 8px;
+        color: var(--bg);
+        font-family: "Orbitron", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.3s;
+        white-space: nowrap;
+      }
+      .chat-send:hover {
+        box-shadow: 0 0 20px rgba(0, 245, 196, 0.4);
+        transform: translateY(-1px);
+      }
+      .quick-chat-row {
+        padding: 12px 20px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+        background: var(--bg2);
+      }
+
       footer {
         text-align: center;
         padding: 24px;
+        font-family: "Space Mono", monospace;
+        font-size: 9px;
+        letter-spacing: 3px;
         color: var(--muted);
-        font-size: 11px;
-        font-family: "DM Mono", monospace;
         border-top: 1px solid var(--border);
         margin-top: 20px;
+        text-transform: uppercase;
+      }
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 2px;
       }
     </style>
   </head>
   <body>
     <div class="wrapper">
       <header>
-        <div>
-          <div class="logo-text">📊 StockSense AI</div>
-          <div class="logo-sub">NSE · BSE Analysis Platform</div>
+        <div class="logo">
+          <div class="logo-icon">📊</div>
+          <div>
+            <div class="logo-name">STOCKSENSE</div>
+            <div class="logo-tag">AI · NSE · BSE · Analysis Platform</div>
+          </div>
         </div>
-        <div class="badge">
-          <div class="dot"></div>
-          LOCAL AI · OLLAMA
+        <div class="header-right">
+          <div class="hbadge hbadge-green">
+            <div class="live-dot"></div>
+            GROQ · LLAMA 3.1
+          </div>
+          <div class="hbadge hbadge-blue">INDIA MARKETS</div>
         </div>
       </header>
 
-      <div class="search-box">
-        <div class="search-label">⚡ Analyze Any NSE Stock</div>
-        <div class="search-row">
-          <input
-            class="search-input"
-            id="inp"
-            type="text"
-            placeholder="TATAPOWER, RELIANCE, INFY..."
-          />
-          <button class="btn" id="analyzeBtn" onclick="analyze()">
-            ▶ Analyze
-          </button>
+      <div class="indices-section">
+        <div class="indices-top">
+          <div class="indices-label">📈 Live Market Overview</div>
+          <div class="market-pill pill-closed" id="mktStatus">
+            ⏸ MARKET CLOSED
+          </div>
         </div>
-        <div class="quick">
-          <span
-            style="
-              font-size: 11px;
-              color: var(--muted);
-              font-family: 'DM Mono', monospace;
-            "
-            >QUICK:</span
-          >
-          <div class="chip" onclick="quick('TATAPOWER')">TATAPOWER</div>
-          <div class="chip" onclick="quick('RELIANCE')">RELIANCE</div>
-          <div class="chip" onclick="quick('INFY')">INFY</div>
-          <div class="chip" onclick="quick('HDFCBANK')">HDFCBANK</div>
-          <div class="chip" onclick="quick('ZOMATO')">ZOMATO</div>
+        <div class="indices-grid" id="idxGrid">
+          <div class="idx-card">
+            <div class="idx-name">Loading...</div>
+            <div class="idx-price" style="color: var(--muted)">—</div>
+          </div>
+        </div>
+        <div class="indices-time" id="idxTime"></div>
+      </div>
+
+      <div>
+        <div class="ex-tabs">
+          <div class="ex-tab active-nse" id="tabNSE" onclick="switchEx('NSE')">
+            <div class="tab-dot nse-dot"></div>
+            NSE
+          </div>
+          <div class="ex-tab" id="tabBSE" onclick="switchEx('BSE')">
+            <div class="tab-dot bse-dot"></div>
+            BSE
+          </div>
+        </div>
+
+        <div class="search-panel">
+          <div id="pNSE">
+            <div class="search-hint">▸ Enter NSE Stock Symbol</div>
+            <div class="search-row">
+              <input
+                class="s-input"
+                id="inpNSE"
+                type="text"
+                placeholder="RELIANCE / INFY / YESBANK"
+                onkeypress="if(event.key==='Enter') go('NSE')"
+              />
+              <button class="btn-analyze btn-nse" onclick="go('NSE')">
+                ANALYZE NSE ▶
+              </button>
+            </div>
+            <div class="quick-row">
+              <span class="quick-label">Quick:</span>
+              <div class="qchip" onclick="qa('TATAPOWER','NSE')">TATAPOWER</div>
+              <div class="qchip" onclick="qa('RELIANCE','NSE')">RELIANCE</div>
+              <div class="qchip" onclick="qa('INFY','NSE')">INFY</div>
+              <div class="qchip" onclick="qa('HDFCBANK','NSE')">HDFCBANK</div>
+              <div class="qchip" onclick="qa('YESBANK','NSE')">YESBANK</div>
+              <div class="qchip" onclick="qa('TCS','NSE')">TCS</div>
+            </div>
+          </div>
+          <div id="pBSE" style="display: none">
+            <div class="search-hint">▸ Enter Company Name for BSE</div>
+            <div class="search-row">
+              <input
+                class="s-input bse"
+                id="inpBSE"
+                type="text"
+                placeholder="Reliance / Yes Bank / Infosys"
+                onkeypress="if(event.key==='Enter') go('BSE')"
+              />
+              <button class="btn-analyze btn-bse" onclick="go('BSE')">
+                ANALYZE BSE ▶
+              </button>
+            </div>
+            <div class="quick-row">
+              <span class="quick-label">Quick:</span>
+              <div class="qchip bse" onclick="qa('Tata Power','BSE')">
+                Tata Power
+              </div>
+              <div class="qchip bse" onclick="qa('Reliance','BSE')">
+                Reliance
+              </div>
+              <div class="qchip bse" onclick="qa('Infosys','BSE')">Infosys</div>
+              <div class="qchip bse" onclick="qa('HDFC Bank','BSE')">
+                HDFC Bank
+              </div>
+              <div class="qchip bse" onclick="qa('Yes Bank','BSE')">
+                Yes Bank
+              </div>
+              <div class="qchip bse" onclick="qa('TCS','BSE')">TCS</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="error-box" id="errorBox"></div>
+      <div class="err-box" id="errBox"></div>
 
       <div class="loading" id="loading">
-        <div class="ring"></div>
-        <div class="load-txt">ANALYZING STOCK WITH AI...</div>
+        <div class="load-ring-wrap">
+          <div class="load-ring ring-1"></div>
+          <div class="load-ring ring-2"></div>
+          <div class="load-ring ring-3"></div>
+        </div>
+        <div class="load-title" id="loadTitle">ANALYZING STOCK</div>
         <div class="load-steps">
-          <div class="load-step">→ Fetching price data from yfinance...</div>
-          <div class="load-step">→ Processing financial metrics...</div>
-          <div class="load-step">→ Running Llama 3.1 analysis...</div>
+          <div class="load-step" id="ls1">Fetching market data</div>
+          <div class="load-step" id="ls2">Processing financial metrics</div>
+          <div class="load-step" id="ls3">Running Llama 3.1 analysis</div>
         </div>
       </div>
 
       <div class="results" id="results">
-        <div class="company-bar">
-          <div>
-            <div class="co-name" id="coName">—</div>
-            <div class="co-sub" id="coSub">NSE LISTED</div>
+        <div class="co-header">
+          <div class="co-left">
+            <div class="co-avatar avatar-nse" id="coAvatar">—</div>
+            <div>
+              <div class="co-name" id="coName">—</div>
+              <div class="co-meta" id="coMeta">—</div>
+            </div>
           </div>
-          <div class="verdict watch" id="verdictBox">⚡ WATCH</div>
+          <div class="verdict v-watch" id="verdictBox">WATCH</div>
         </div>
 
-        <div class="stats">
-          <div class="stat">
-            <div class="stat-l">Current Price</div>
-            <div class="stat-v" id="sPrice">—</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Current Price</div>
+            <div class="stat-val" id="stPrice">—</div>
+            <div class="stat-sub">Market Price</div>
+            <div class="stat-line"></div>
           </div>
-          <div class="stat">
-            <div class="stat-l">52W High</div>
-            <div class="stat-v" id="sHigh">—</div>
+          <div class="stat-card">
+            <div class="stat-label">52W High</div>
+            <div class="stat-val" id="stHigh">—</div>
+            <div class="stat-sub">Annual Peak</div>
+            <div class="stat-line"></div>
           </div>
-          <div class="stat">
-            <div class="stat-l">52W Low</div>
-            <div class="stat-v" id="sLow">—</div>
+          <div class="stat-card">
+            <div class="stat-label">52W Low</div>
+            <div class="stat-val" id="stLow">—</div>
+            <div class="stat-sub">Annual Trough</div>
+            <div class="stat-line"></div>
           </div>
-          <div class="stat">
-            <div class="stat-l">PE Ratio</div>
-            <div class="stat-v" id="sPE">—</div>
+          <div class="stat-card">
+            <div class="stat-label">PE Ratio</div>
+            <div class="stat-val" id="stPE">—</div>
+            <div class="stat-sub" id="stPEsub">Valuation</div>
+            <div class="stat-line"></div>
           </div>
-          <div class="stat">
-            <div class="stat-l">ROE</div>
-            <div class="stat-v" id="sROE">—</div>
+          <div class="stat-card">
+            <div class="stat-label">ROE</div>
+            <div class="stat-val" id="stROE">—</div>
+            <div class="stat-sub" id="stROEsub">Return on Equity</div>
+            <div class="stat-line"></div>
           </div>
-          <div class="stat">
-            <div class="stat-l">Debt / Equity</div>
-            <div class="stat-v" id="sDE">—</div>
+          <div class="stat-card">
+            <div class="stat-label">Profit Margin</div>
+            <div class="stat-val" id="stPM">—</div>
+            <div class="stat-sub">Net Margin</div>
+            <div class="stat-line"></div>
           </div>
         </div>
 
-        <div class="grid2">
-          <div class="panel">
-            <div class="panel-title">📋 Key Metrics</div>
-            <div class="row">
-              <span class="rl">Profit Margin</span
-              ><span class="rv" id="mPM">—</span>
+        <div class="ex-panel nse-xp" id="nseXP">
+          <div class="xp-title">▸ NSE Live Market Data</div>
+          <div class="xp-grid">
+            <div class="xp-card">
+              <div class="xp-label">VWAP</div>
+              <div class="xp-val" id="xVwap">—</div>
             </div>
-            <div class="row">
-              <span class="rl">Dividend Yield</span
-              ><span class="rv" id="mDY">—</span>
+            <div class="xp-card">
+              <div class="xp-label">Delivery %</div>
+              <div class="xp-val col-up" id="xDel">—</div>
             </div>
-            <div class="row">
-              <span class="rl">Avg Volume</span
-              ><span class="rv" id="mVol">—</span>
+            <div class="xp-card">
+              <div class="xp-label">Upper Circuit</div>
+              <div class="xp-val" id="xUp">—</div>
             </div>
-            <div class="row">
-              <span class="rl">Market Cap</span
-              ><span class="rv" id="mCap">—</span>
+            <div class="xp-card">
+              <div class="xp-label">Lower Circuit</div>
+              <div class="xp-val" id="xDn">—</div>
             </div>
-            <div class="row">
-              <span class="rl">Total Revenue</span
-              ><span class="rv" id="mRev">—</span>
+            <div class="xp-card">
+              <div class="xp-label">Face Value</div>
+              <div class="xp-val" id="xFace">—</div>
             </div>
-          </div>
-          <div class="panel">
-            <div class="panel-title">📈 Price Position</div>
-            <div class="row">
-              <span class="rl">vs 52W High</span
-              ><span class="rv" id="ppHigh">—</span>
-            </div>
-            <div class="row">
-              <span class="rl">vs 52W Low</span
-              ><span class="rv" id="ppLow">—</span>
-            </div>
-            <div class="row">
-              <span class="rl">Price Range</span
-              ><span class="rv" id="ppRange">—</span>
-            </div>
-            <div class="row">
-              <span class="rl">PE Assessment</span
-              ><span class="rv" id="ppPE">—</span>
-            </div>
-            <div class="row">
-              <span class="rl">ROE Assessment</span
-              ><span class="rv" id="ppROE">—</span>
+            <div class="xp-card">
+              <div class="xp-label">Volume</div>
+              <div class="xp-val" id="xVol">—</div>
             </div>
           </div>
         </div>
 
-        <div class="ai-box">
-          <div class="panel-title">🤖 AI Analysis — Llama 3.1 via Ollama</div>
-          <div class="ai-text" id="aiText">—</div>
+        <div class="ex-panel bse-xp" id="bseXP">
+          <div class="xp-title">▸ BSE Market Data</div>
+          <div class="xp-grid">
+            <div class="xp-card">
+              <div class="xp-label">BSE Code</div>
+              <div class="xp-val" id="xBCode">—</div>
+            </div>
+            <div class="xp-card">
+              <div class="xp-label">BSE Volume</div>
+              <div class="xp-val" id="xBVol">—</div>
+            </div>
+            <div class="xp-card">
+              <div class="xp-label">Face Value</div>
+              <div class="xp-val" id="xBFace">—</div>
+            </div>
+            <div class="xp-card">
+              <div class="xp-label">Dividend Yield</div>
+              <div class="xp-val" id="xBDY">—</div>
+            </div>
+          </div>
         </div>
 
-        <div class="targets">
-          <div class="tcard">
-            <div class="tl">🎯 Entry</div>
-            <div class="tv" style="color: var(--accent)" id="tEntry">—</div>
+        <div class="panels-grid">
+          <div class="info-panel">
+            <div class="panel-hd">Key Metrics</div>
+            <div class="data-row">
+              <span class="dr-l">Debt / Equity</span
+              ><span class="dr-v" id="mDE">—</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-l">Dividend Yield</span
+              ><span class="dr-v" id="mDY">—</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-l">Market Cap</span
+              ><span class="dr-v" id="mCap">—</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-l">Avg Volume</span
+              ><span class="dr-v" id="mVol">—</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-l">Sector</span
+              ><span class="dr-v" id="mSec">—</span>
+            </div>
           </div>
-          <div class="tcard">
-            <div class="tl">🚀 Target</div>
-            <div class="tv" style="color: var(--green)" id="tTarget">—</div>
+          <div class="info-panel">
+            <div class="panel-hd">Price Position</div>
+            <div class="data-row">
+              <span class="dr-l">vs 52W High</span
+              ><span class="dr-v col-down" id="pHigh">—</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-l">vs 52W Low</span
+              ><span class="dr-v col-up" id="pLow">—</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-l">Price Range</span
+              ><span class="dr-v" id="pRange">—</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-l">PE Assessment</span
+              ><span class="dr-v" id="pPE">—</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-l">ROE Assessment</span
+              ><span class="dr-v" id="pROE">—</span>
+            </div>
           </div>
-          <div class="tcard">
-            <div class="tl">🛑 Stop Loss</div>
-            <div class="tv" style="color: var(--red)" id="tSL">—</div>
+        </div>
+
+        <div class="ai-panel">
+          <div class="ai-hd" id="aiHd">🤖 AI Analysis — Llama 3.1 via Groq</div>
+          <div class="ai-content" id="aiContent">—</div>
+        </div>
+
+        <div class="targets-grid">
+          <div class="target-card">
+            <div class="target-label">🎯 Entry Target</div>
+            <div class="target-price" style="color: var(--blue)" id="tEntry">
+              —
+            </div>
+          </div>
+          <div class="target-card">
+            <div class="target-label">🚀 Price Target</div>
+            <div class="target-price" style="color: var(--accent)" id="tTarget">
+              —
+            </div>
+          </div>
+          <div class="target-card">
+            <div class="target-label">🛑 Stop Loss</div>
+            <div class="target-price" style="color: var(--red)" id="tSL">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="chat-wrap" id="chatWrap">
+        <div class="chat-box">
+          <div class="chat-hd">AI Stock Analyst Chat</div>
+          <div class="chat-messages" id="chatMsgs">
+            <div class="msg msg-ai">
+              👋 Stock analyzed! Ask me anything about it.<br /><br />
+              Try: "What was profit in 2024?" or "Is PE ratio good?" or "Should
+              I buy now?"
+            </div>
+          </div>
+          <div class="chat-input-wrap">
+            <input
+              class="chat-in"
+              id="chatIn"
+              placeholder="Ask anything about this stock..."
+              onkeypress="if(event.key==='Enter') sendMsg()"
+            />
+            <button class="chat-send" onclick="sendMsg()">SEND ▶</button>
+          </div>
+          <div class="quick-chat-row">
+            <span class="quick-label">Quick:</span>
+            <div
+              class="qchip"
+              onclick="qc('What was profit percentage in 2024?')"
+            >
+              Profit 2024?
+            </div>
+            <div class="qchip" onclick="qc('Is PE ratio good or expensive?')">
+              PE good?
+            </div>
+            <div
+              class="qchip"
+              onclick="qc('How has revenue grown over years?')"
+            >
+              Revenue trend?
+            </div>
+            <div class="qchip" onclick="qc('Should I buy at current price?')">
+              Buy now?
+            </div>
+            <div class="qchip" onclick="qc('What are the main risks?')">
+              Main risks?
+            </div>
           </div>
         </div>
       </div>
 
       <footer>
-        ⚠️ FOR EDUCATIONAL PURPOSES ONLY · NOT FINANCIAL ADVICE · ALWAYS DO YOUR
-        OWN RESEARCH
+        ⚠ For Educational Purposes Only · Not Financial Advice · Always Do Your
+        Own Research · StockSense AI
       </footer>
     </div>
 
     <script>
-      function quick(s) {
-        document.getElementById("inp").value = s;
-        analyze();
+      let curEx = "NSE";
+
+      function switchEx(ex) {
+        curEx = ex;
+        document.getElementById("tabNSE").className =
+          "ex-tab" + (ex === "NSE" ? " active-nse" : "");
+        document.getElementById("tabBSE").className =
+          "ex-tab" + (ex === "BSE" ? " active-bse" : "");
+        document.getElementById("pNSE").style.display =
+          ex === "NSE" ? "block" : "none";
+        document.getElementById("pBSE").style.display =
+          ex === "BSE" ? "block" : "none";
+        document.getElementById("results").classList.remove("show");
+        document.getElementById("chatWrap").style.display = "none";
+        document.getElementById("errBox").classList.remove("show");
       }
 
-      function formatNum(n) {
+      function qa(sym, ex) {
+        switchEx(ex);
+        document.getElementById(ex === "NSE" ? "inpNSE" : "inpBSE").value = sym;
+        go(ex);
+      }
+
+      function qc(q) {
+        document.getElementById("chatIn").value = q;
+        sendMsg();
+      }
+
+      function fmt(n) {
         if (!n || n === "N/A") return "—";
-        if (n >= 10000000) return "₹" + (n / 10000000).toFixed(1) + "Cr";
-        if (n >= 100000) return "₹" + (n / 100000).toFixed(1) + "L";
-        return "₹" + n;
+        const num = parseFloat(n);
+        if (isNaN(num)) return n;
+        if (num >= 10000000) return "₹" + (num / 10000000).toFixed(1) + " Cr";
+        if (num >= 100000) return "₹" + (num / 100000).toFixed(1) + " L";
+        return "₹" + num.toLocaleString("en-IN");
       }
 
-      function extractVerdict(text) {
-        const t = text.toUpperCase();
+      function getVerdict(txt) {
+        const t = txt.toUpperCase();
         if (t.includes("VERDICT: BUY") || t.includes("VERDICT:BUY"))
           return "BUY";
         if (t.includes("VERDICT: AVOID") || t.includes("VERDICT:AVOID"))
@@ -671,97 +1554,186 @@
         return "WATCH";
       }
 
-      function extractPrice(text, keyword) {
-        const regex = new RegExp(keyword + "[:\\s]*[₹]?([\\d,\\.]+)", "i");
-        const match = text.match(regex);
-        return match ? "₹" + match[1] : "—";
+      // ---- IMPROVED PRICE EXTRACTION ----
+      function getPrice(txt, keywords) {
+        if (typeof keywords === "string") keywords = [keywords];
+        for (const kw of keywords) {
+          const patterns = [
+            new RegExp(kw + "[:\\s]+[₹]?([\\d,\\.]+)", "i"),
+            new RegExp(kw + "\\s+price[:\\s]+[₹]?([\\d,\\.]+)", "i"),
+            new RegExp(kw + "\\s+around[:\\s]+[₹]?([\\d,\\.]+)", "i"),
+            new RegExp(kw + "\\s+at[:\\s]+[₹]?([\\d,\\.]+)", "i"),
+            new RegExp(kw + "\\s+level[:\\s]+[₹]?([\\d,\\.]+)", "i"),
+            new RegExp(kw + "[:\\s]+approximately[:\\s]+[₹]?([\\d,\\.]+)", "i"),
+          ];
+          for (const r of patterns) {
+            const m = txt.match(r);
+            if (m) return "₹" + m[1].replace(",", "");
+          }
+        }
+        return "—";
       }
 
-      async function analyze() {
-        const symbol = document
-          .getElementById("inp")
-          .value.trim()
-          .toUpperCase();
-        if (!symbol) {
-          alert("Please enter a stock symbol!");
+      async function go(ex) {
+        const sym = document
+          .getElementById(ex === "NSE" ? "inpNSE" : "inpBSE")
+          .value.trim();
+        if (!sym) {
+          alert("Please enter a " + (ex === "NSE" ? "symbol" : "company name"));
           return;
         }
+        curEx = ex;
 
         document.getElementById("loading").classList.add("show");
         document.getElementById("results").classList.remove("show");
-        document.getElementById("errorBox").classList.remove("show");
-        document.getElementById("analyzeBtn").disabled = true;
+        document.getElementById("chatWrap").style.display = "none";
+        document.getElementById("errBox").classList.remove("show");
+        document.getElementById("loadTitle").textContent =
+          "ANALYZING " + ex + " STOCK";
+        document.getElementById("ls1").textContent =
+          ex === "NSE"
+            ? "Fetching NSE + yfinance data"
+            : "Searching BSE company";
 
         try {
           const res = await fetch("/analyze", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ symbol }),
+            body: JSON.stringify({ symbol: sym, exchange: ex }),
           });
           const json = await res.json();
 
           if (json.error) {
-            document.getElementById("errorBox").textContent =
-              "⚠️ " + json.error;
-            document.getElementById("errorBox").classList.add("show");
+            document.getElementById("errBox").textContent = "⚠ " + json.error;
+            document.getElementById("errBox").classList.add("show");
             return;
           }
 
           const d = json.data;
-          const analysis = json.analysis;
-          const price = d.current_price || 0;
-          const high = d.week_high || 0;
-          const low = d.week_low || 0;
+          const ai = json.analysis;
+          const price = parseFloat(d.current_price) || 0;
+          const high = parseFloat(d.week_high) || 0;
+          const low = parseFloat(d.week_low) || 0;
+          const initials = (d.name || sym)
+            .split(" ")
+            .map((w) => w[0])
+            .join("")
+            .slice(0, 3)
+            .toUpperCase();
 
-          document.getElementById("coName").textContent = d.name || symbol;
-          document.getElementById("coSub").textContent =
-            symbol + " · NSE LISTED";
-          document.getElementById("sPrice").textContent = price
-            ? "₹" + price
+          const av = document.getElementById("coAvatar");
+          av.textContent = initials;
+          av.className =
+            "co-avatar " + (ex === "NSE" ? "avatar-nse" : "avatar-bse");
+
+          document.getElementById("coName").innerHTML =
+            (d.name || sym) +
+            `<span class="ex-tag ${
+              ex === "NSE" ? "tag-nse" : "tag-bse"
+            }">${ex}</span>`;
+          document.getElementById("coMeta").textContent =
+            (d.symbol || sym) +
+            " · " +
+            ex +
+            " · " +
+            (d.sector || "N/A") +
+            " · " +
+            (d.industry || "");
+
+          document.getElementById("stPrice").textContent = price
+            ? "₹" + price.toLocaleString("en-IN")
             : "—";
-          document.getElementById("sHigh").textContent = high
+          document.getElementById("stHigh").textContent = high
             ? "₹" + high
             : "—";
-          document.getElementById("sLow").textContent = low ? "₹" + low : "—";
-          document.getElementById("sPE").textContent = d.pe_ratio
+          document.getElementById("stLow").textContent = low ? "₹" + low : "—";
+          document.getElementById("stPE").textContent = d.pe_ratio
             ? d.pe_ratio + "x"
             : "—";
-          document.getElementById("sROE").textContent = d.roe
+          document.getElementById("stPEsub").textContent = d.pe_ratio
+            ? d.pe_ratio > 30
+              ? "Expensive"
+              : d.pe_ratio > 15
+              ? "Fair Value"
+              : "Cheap"
+            : "Valuation";
+          document.getElementById("stROE").textContent = d.roe
             ? d.roe + "%"
             : "—";
-          document.getElementById("sDE").textContent = d.debt_to_equity || "—";
-          document.getElementById("mPM").textContent = d.profit_margin
+          document.getElementById("stROEsub").textContent = d.roe
+            ? d.roe > 15
+              ? "Strong ✓"
+              : d.roe > 10
+              ? "Moderate"
+              : "Weak"
+            : "Return on Equity";
+          document.getElementById("stPM").textContent = d.profit_margin
             ? d.profit_margin + "%"
             : "—";
+
+          document.getElementById("nseXP").style.display = "none";
+          document.getElementById("bseXP").style.display = "none";
+
+          if (ex === "NSE" && d.nse_vwap && d.nse_vwap !== "N/A") {
+            document.getElementById("nseXP").style.display = "block";
+            document.getElementById("xVwap").textContent = "₹" + d.nse_vwap;
+            document.getElementById("xDel").textContent = d.delivery_percent
+              ? d.delivery_percent + "%"
+              : "—";
+            document.getElementById("xUp").textContent = d.nse_upper_circuit
+              ? "₹" + d.nse_upper_circuit
+              : "—";
+            document.getElementById("xDn").textContent = d.nse_lower_circuit
+              ? "₹" + d.nse_lower_circuit
+              : "—";
+            document.getElementById("xFace").textContent = d.face_value
+              ? "₹" + d.face_value
+              : "—";
+            document.getElementById("xVol").textContent = d.total_traded_volume
+              ? (d.total_traded_volume / 100000).toFixed(1) + "L"
+              : "—";
+          }
+
+          if (ex === "BSE") {
+            document.getElementById("bseXP").style.display = "block";
+            document.getElementById("xBCode").textContent = d.bse_code || "—";
+            document.getElementById("xBVol").textContent = d.bse_volume || "—";
+            document.getElementById("xBFace").textContent = d.face_value
+              ? "₹" + d.face_value
+              : "—";
+            document.getElementById("xBDY").textContent = d.dividend_yield
+              ? d.dividend_yield + "%"
+              : "—";
+          }
+
+          document.getElementById("mDE").textContent = d.debt_to_equity || "—";
           document.getElementById("mDY").textContent = d.dividend_yield
             ? d.dividend_yield + "%"
             : "—";
+          document.getElementById("mCap").textContent = fmt(d.market_cap);
           document.getElementById("mVol").textContent = d.volume
             ? (d.volume / 100000).toFixed(1) + "L"
             : "—";
-          document.getElementById("mCap").textContent = formatNum(d.market_cap);
-          document.getElementById("mRev").textContent = formatNum(d.revenue);
+          document.getElementById("mSec").textContent = d.sector || "—";
 
-          const vHigh =
+          document.getElementById("pHigh").textContent =
             high && price
               ? (((price - high) / high) * 100).toFixed(1) + "%"
               : "—";
-          const vLow =
+          document.getElementById("pLow").textContent =
             low && price
               ? "+" + (((price - low) / low) * 100).toFixed(1) + "%"
               : "—";
-          document.getElementById("ppHigh").textContent = vHigh;
-          document.getElementById("ppLow").textContent = vLow;
-          document.getElementById("ppRange").textContent =
+          document.getElementById("pRange").textContent =
             high && low ? "₹" + low + " — ₹" + high : "—";
-          document.getElementById("ppPE").textContent = d.pe_ratio
+          document.getElementById("pPE").textContent = d.pe_ratio
             ? d.pe_ratio > 30
               ? "Expensive"
               : d.pe_ratio > 15
               ? "Fair"
               : "Cheap"
             : "—";
-          document.getElementById("ppROE").textContent = d.roe
+          document.getElementById("pROE").textContent = d.roe
             ? d.roe > 15
               ? "Strong"
               : d.roe > 10
@@ -769,44 +1741,161 @@
               : "Weak"
             : "—";
 
-          document.getElementById("aiText").textContent = analysis;
+          document.getElementById("aiHd").textContent =
+            "🤖 AI Analysis — " + ex + " · Llama 3.1 via Groq";
+          document.getElementById("aiContent").textContent = ai;
 
-          const verdict = extractVerdict(analysis);
-          const vBox = document.getElementById("verdictBox");
-          vBox.className = "verdict " + verdict.toLowerCase();
-          vBox.textContent =
-            verdict === "BUY"
-              ? "✅ BUY"
-              : verdict === "AVOID"
-              ? "❌ AVOID"
-              : "⚡ WATCH";
+          const v = getVerdict(ai);
+          const vb = document.getElementById("verdictBox");
+          vb.className =
+            "verdict " +
+            (v === "BUY" ? "v-buy" : v === "AVOID" ? "v-avoid" : "v-watch");
+          vb.textContent =
+            v === "BUY" ? "✓ BUY" : v === "AVOID" ? "✗ AVOID" : "◈ WATCH";
 
-          document.getElementById("tEntry").textContent = extractPrice(
-            analysis,
-            "ENTRY"
-          );
-          document.getElementById("tTarget").textContent = extractPrice(
-            analysis,
-            "TARGET"
-          );
-          document.getElementById("tSL").textContent =
-            extractPrice(analysis, "STOPLOSS") ||
-            extractPrice(analysis, "STOP LOSS");
+          // ---- IMPROVED TARGET EXTRACTION ----
+          document.getElementById("tEntry").textContent = getPrice(ai, [
+            "ENTRY",
+            "BUY",
+            "ENTRY PRICE",
+            "SUGGESTED ENTRY",
+            "BUY PRICE",
+            "BUY AROUND",
+          ]);
+
+          document.getElementById("tTarget").textContent = getPrice(ai, [
+            "TARGET",
+            "PRICE TARGET",
+            "TP",
+            "TARGET PRICE",
+            "PROFIT TARGET",
+            "UPSIDE TARGET",
+          ]);
+
+          document.getElementById("tSL").textContent = getPrice(ai, [
+            "STOPLOSS",
+            "STOP LOSS",
+            "STOP",
+            "SL",
+            "STOP LOSS LEVEL",
+            "EXIT",
+            "STOP-LOSS",
+          ]);
 
           document.getElementById("results").classList.add("show");
+
+          document.getElementById("chatMsgs").innerHTML = `
+      <div class="msg msg-ai">
+        👋 <strong>${d.name || sym}</strong> analyzed on ${ex}.<br>
+        Ask me anything — profit trends, PE analysis, buy/sell decisions!
+      </div>`;
+          document.getElementById("chatWrap").style.display = "block";
         } catch (e) {
-          document.getElementById("errorBox").textContent =
-            "⚠️ Connection error. Make sure server is running.";
-          document.getElementById("errorBox").classList.add("show");
+          document.getElementById("errBox").textContent =
+            "⚠ Connection error. Make sure server is running.";
+          document.getElementById("errBox").classList.add("show");
         } finally {
           document.getElementById("loading").classList.remove("show");
-          document.getElementById("analyzeBtn").disabled = false;
         }
       }
 
-      document.getElementById("inp").addEventListener("keypress", (e) => {
-        if (e.key === "Enter") analyze();
-      });
+      async function sendMsg() {
+        const inp = document.getElementById("chatIn");
+        const q = inp.value.trim();
+        if (!q) return;
+        const msgs = document.getElementById("chatMsgs");
+
+        const uDiv = document.createElement("div");
+        uDiv.className = "msg msg-user";
+        uDiv.textContent = q;
+        msgs.appendChild(uDiv);
+        inp.value = "";
+
+        const tDiv = document.createElement("div");
+        tDiv.className = "msg msg-typing";
+        tDiv.id = "typing";
+        tDiv.textContent = "▸ AI thinking...";
+        msgs.appendChild(tDiv);
+        msgs.scrollTop = msgs.scrollHeight;
+
+        try {
+          const res = await fetch("/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ question: q }),
+          });
+          const json = await res.json();
+          document.getElementById("typing")?.remove();
+          const aDiv = document.createElement("div");
+          aDiv.className = "msg msg-ai";
+          aDiv.textContent = json.answer || json.error;
+          msgs.appendChild(aDiv);
+          msgs.scrollTop = msgs.scrollHeight;
+        } catch (e) {
+          document.getElementById("typing")?.remove();
+          const eDiv = document.createElement("div");
+          eDiv.className = "msg msg-ai";
+          eDiv.textContent = "Connection error. Please try again.";
+          msgs.appendChild(eDiv);
+        }
+      }
+
+      async function loadIndices() {
+        try {
+          const res = await fetch("/indices");
+          const json = await res.json();
+          const grid = document.getElementById("idxGrid");
+          const status = document.getElementById("mktStatus");
+          const timeEl = document.getElementById("idxTime");
+
+          if (json.market_open) {
+            status.className = "market-pill pill-open";
+            status.textContent = "🟢 MARKET OPEN";
+          } else {
+            status.className = "market-pill pill-closed";
+            status.textContent = "⏸ MARKET CLOSED";
+          }
+
+          if (json.timestamp) {
+            timeEl.textContent =
+              "Last updated: " +
+              json.timestamp +
+              (json.market_open ? " · Live" : " · Market Closed");
+          }
+
+          if (json.indices && json.indices.length > 0) {
+            grid.innerHTML = json.indices
+              .map(
+                (idx) => `
+        <div class="idx-card">
+          <div class="idx-name">${idx.name}</div>
+          <div class="idx-price ${
+            idx.direction === "up" ? "col-up" : "col-down"
+          }">
+            ${Number(idx.price).toLocaleString("en-IN")}
+          </div>
+          <div class="idx-chg ${
+            idx.direction === "up" ? "col-up" : "col-down"
+          }">
+            ${idx.direction === "up" ? "▲" : "▼"} ${Math.abs(
+                  Number(idx.percent_change)
+                ).toFixed(2)}%
+          </div>
+          <div class="idx-bar ${
+            idx.direction === "up" ? "bar-up" : "bar-down"
+          }"></div>
+        </div>
+      `
+              )
+              .join("");
+          }
+        } catch (e) {
+          console.log("Indices error:", e);
+        }
+      }
+
+      loadIndices();
+      setInterval(loadIndices, 5000);
     </script>
   </body>
 </html>
